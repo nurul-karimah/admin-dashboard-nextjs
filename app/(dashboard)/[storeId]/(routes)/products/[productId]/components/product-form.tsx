@@ -38,10 +38,10 @@ import { TextArea } from "@/components/ui/textarea";
 
 interface ProductFormProps {
   initialData:
-    | (Product & {
-        images: Image[];
-      })
-    | null;
+  | (Product & {
+    images: Image[];
+  })
+  | null;
   categories: Category[];
 }
 
@@ -80,23 +80,23 @@ export const ProductForm: React.FC<ProductFormProps> = ({
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData
-  ? {
-      ...initialData,
-      price: parseFloat(String(initialData.price)),
-      benefits: initialData.benefits ?? undefined,
-      usage: initialData.usage ?? undefined,
-    }
-  : {
-      name: "",
-      images: [],
-      price: 0,
-      description: "",
-      benefits: undefined,
-      usage: undefined,
-      categoryId: "",
-      isFeatured: false,
-      isArchived: false,
-    },
+      ? {
+        ...initialData,
+        price: parseFloat(String(initialData.price)),
+        benefits: initialData.benefits ?? undefined,
+        usage: initialData.usage ?? undefined,
+      }
+      : {
+        name: "",
+        images: [],
+        price: 0,
+        description: "",
+        benefits: undefined,
+        usage: undefined,
+        categoryId: "",
+        isFeatured: false,
+        isArchived: false,
+      },
   });
 
   const onSubmit = async (data: ProductFormValues) => {
@@ -137,7 +137,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
   const formatText = (text: string) => {
     return text.replace(/<br>/g, "\n");
   };
-  
+
   return (
     <>
       <AlertModal
@@ -266,10 +266,10 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                 <FormItem>
                   <FormLabel>Deskripsi</FormLabel>
                   <FormControl>
-                    <TextArea 
-                    placeholder="Masukkan deskripsi..."
-                    disabled={loading}
-                    {...field}
+                    <TextArea
+                      placeholder="Masukkan deskripsi..."
+                      disabled={loading}
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -283,34 +283,34 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                 <FormItem>
                   <FormLabel>Manfaat dan Kegunaan</FormLabel>
                   <FormControl>
-                    <TextArea 
-                    placeholder="Masukkan Manfaat dan Kegunaan..."
-                    disabled={loading}
-                    {...field}
+                    <TextArea
+                      placeholder="Masukkan Manfaat dan Kegunaan..."
+                      disabled={loading}
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-<FormField
-  control={form.control}
-  name="usage"
-  render={({ field }) => (
-    <FormItem>
-      <FormLabel>Cara Penggunaan</FormLabel>
-      <FormControl>
-        <TextArea 
-          placeholder="Masukkan Cara Penggunaan..."
-          disabled={loading}
-          {...field}
-          value={formatText(field.value || "")}
-        />
-      </FormControl>
-      <FormMessage />
-    </FormItem>
-  )}
-/>
+            <FormField
+              control={form.control}
+              name="usage"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Cara Penggunaan</FormLabel>
+                  <FormControl>
+                    <TextArea
+                      placeholder="Masukkan Cara Penggunaan..."
+                      disabled={loading}
+                      {...field}
+                      value={formatText(field.value || "")}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <FormField
               control={form.control}
