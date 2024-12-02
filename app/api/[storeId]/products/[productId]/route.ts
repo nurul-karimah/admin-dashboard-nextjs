@@ -36,7 +36,7 @@ export async function PATCH(
     const { userId } = auth();
     const body = await req.json();
 
-    const { name, price, categoryId, images, isFeatured, isArchived } = body;
+    const { name, price, categoryId, description, benefits, usage, images, isFeatured, isArchived } = body;
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 401 });
@@ -57,6 +57,10 @@ export async function PATCH(
       return new NextResponse("Kategori perlu diinput", { status: 400 });
     }
 
+    if (!description) {
+      return new NextResponse("Deskripsi perlu diinput", { status: 400 });
+    }
+
     if (!params.productId) {
       return new NextResponse("Product id dibutuhkan", { status: 400 });
     }
@@ -71,6 +75,7 @@ export async function PATCH(
     if (!storeByUserId) {
       return new NextResponse("Unauthorized", { status: 403 });
     }
+    const processedUsage = usage.replace(/\n/g, "<br>");
 
     await db.product.update({
       where: {
@@ -81,6 +86,9 @@ export async function PATCH(
         price,
         isFeatured,
         isArchived,
+        description,
+        benefits,
+        usage: processedUsage,
         categoryId,
         images: {
           deleteMany: {},
@@ -100,7 +108,7 @@ export async function PATCH(
         },
       },
     });
-
+console.log(product)
     return NextResponse.json(product);
   } catch (error) {
     console.log("[PRODUCT_PATCH]", error);

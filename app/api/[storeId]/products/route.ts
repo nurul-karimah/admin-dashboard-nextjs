@@ -10,7 +10,7 @@ export async function POST(
     const { userId } = auth();
     const body = await req.json();
 
-    const { name, price, categoryId, images, isFeatured, isArchived } = body;
+    const { name, price, categoryId, description, benefits, usage, images, isFeatured, isArchived } = body;
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -31,6 +31,9 @@ export async function POST(
     if (!categoryId) {
       return new NextResponse("Kategori perlu diinput", { status: 400 });
     }
+    if (!description) {
+      return new NextResponse("Deskripsi perlu diinput", { status: 400 });
+    }
 
     if (!params.storeId) {
       return new NextResponse("Store id URL dibutuhkan");
@@ -46,6 +49,7 @@ export async function POST(
     if (!storeByUserId) {
       return new NextResponse("Unauthorized", { status: 403 });
     }
+    const processedUsage = usage.replace(/\n/g, "<br>");
 
     const product = await db.product.create({
       data: {
@@ -54,6 +58,9 @@ export async function POST(
         categoryId,
         isFeatured,
         isArchived,
+        description,
+        benefits,
+        usage: processedUsage,
         storeId: params.storeId,
         images: {
           createMany: {
