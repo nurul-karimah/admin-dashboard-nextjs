@@ -34,13 +34,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { TextArea } from "@/components/ui/textarea";
 
 interface ProductFormProps {
   initialData:
-    | (Product & {
-        images: Image[];
-      })
-    | null;
+  | (Product & {
+    images: Image[];
+  })
+  | null;
   categories: Category[];
 }
 
@@ -48,6 +49,9 @@ const formSchema = z.object({
   name: z.string().min(1),
   images: z.object({ url: z.string() }).array(),
   price: z.coerce.number().min(1),
+  description: z.string().min(1),
+  benefits: z.string().min(1).optional(),
+  usage: z.string().min(1).optional(),
   categoryId: z.string().min(1),
   isFeatured: z.boolean().default(false).optional(),
   isArchived: z.boolean().default(false).optional(),
@@ -67,7 +71,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
   const [loading, setLoading] = useState(false);
 
   const title = initialData ? "Edit Product" : "Buat Product";
-  const description = initialData ? "Edit Product Toko" : "Buat Product Toko";
+  const descriptions = initialData ? "Edit Product Toko" : "Buat Product Toko";
   const toastMessage = initialData
     ? "Product berhasil di edit"
     : "Product berhasil dibuat";
@@ -77,17 +81,22 @@ export const ProductForm: React.FC<ProductFormProps> = ({
     resolver: zodResolver(formSchema),
     defaultValues: initialData
       ? {
-          ...initialData,
-          price: parseFloat(String(initialData?.price)),
-        }
+        ...initialData,
+        price: parseFloat(String(initialData.price)),
+        benefits: initialData.benefits ?? undefined,
+        usage: initialData.usage ?? undefined,
+      }
       : {
-          name: "",
-          images: [],
-          price: 0,
-          categoryId: "",
-          isFeatured: false,
-          isArchived: false,
-        },
+        name: "",
+        images: [],
+        price: 0,
+        description: "",
+        benefits: undefined,
+        usage: undefined,
+        categoryId: "",
+        isFeatured: false,
+        isArchived: false,
+      },
   });
 
   const onSubmit = async (data: ProductFormValues) => {
@@ -125,6 +134,9 @@ export const ProductForm: React.FC<ProductFormProps> = ({
       setOpen(false);
     }
   };
+  const formatText = (text: string) => {
+    return text.replace(/<br>/g, "\n");
+  };
 
   return (
     <>
@@ -135,7 +147,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
         loading={loading}
       />
       <div className="flex items-center justify-between">
-        <Heading title={title} description={description} />
+        <Heading title={title} description={descriptions} />
         {initialData && (
           <Button
             disabled={loading}
@@ -247,6 +259,59 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Deskripsi</FormLabel>
+                  <FormControl>
+                    <TextArea
+                      placeholder="Masukkan deskripsi..."
+                      disabled={loading}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="benefits"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Manfaat dan Kegunaan</FormLabel>
+                  <FormControl>
+                    <TextArea
+                      placeholder="Masukkan Manfaat dan Kegunaan..."
+                      disabled={loading}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="usage"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Cara Penggunaan</FormLabel>
+                  <FormControl>
+                    <TextArea
+                      placeholder="Masukkan Cara Penggunaan..."
+                      disabled={loading}
+                      {...field}
+                      value={formatText(field.value || "")}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <FormField
               control={form.control}
               name="isFeatured"
