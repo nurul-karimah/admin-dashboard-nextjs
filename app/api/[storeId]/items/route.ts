@@ -15,7 +15,10 @@ export async function GET(
     if (!params.storeId) {
       return new NextResponse("Store id URL dibutuhkan");
     }
-
+    if (!search) {
+      return NextResponse.json([]); // Kembalikan array kosong jika tidak ada pencarian
+    }
+    
     const products = await db.product.findMany({
       where: {
         storeId: params.storeId,
@@ -28,20 +31,20 @@ export async function GET(
               {
                 name: {
                   contains: search, // Pencarian berdasarkan name
-                  // mode: "insensitive", // Tidak perlu menggunakan mode di sini
+                  mode: "insensitive", // Tidak perlu menggunakan mode di sini
                 },
               },
               {
                 description: {
                   contains: search, // Pencarian berdasarkan description
-                  // mode: "insensitive", // Tidak perlu menggunakan mode di sini
+                  mode: "insensitive", // Tidak perlu menggunakan mode di sini
                 },
               },
               {
                 category: {
                   name: {
                     contains: search, // Pencarian berdasarkan kategori name
-                    // mode: "insensitive", // Tidak perlu menggunakan mode di sini
+                    mode: "insensitive", // Tidak perlu menggunakan mode di sini
                   },
                 },
               },
