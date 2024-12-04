@@ -15,9 +15,6 @@ export async function GET(
     if (!params.storeId) {
       return new NextResponse("Store id URL dibutuhkan");
     }
-    if (!search) {
-      return NextResponse.json([]); // Kembalikan array kosong jika tidak ada pencarian
-    }
     
     const products = await db.product.findMany({
       where: {
